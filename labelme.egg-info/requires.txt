@@ -1,0 +1,7 @@
+imgviz>=0.11
+matplotlib<3.3
+numpy
+Pillow>=2.8
+PyYAML
+qtpy
+termcolor
