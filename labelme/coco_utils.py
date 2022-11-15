@@ -16,11 +16,12 @@ import tqdm
 #             val = [float(v) for v in item]
 #             infos.append(val)
 #     return infos
-def load_coco_txt_file(coco_file):
+def load_coco_txt_file(coco_file_path):
     coco_annos = []
     coco_seg_pts =[]
-    with open(coco_file, 'r') as f:
+    with open(coco_file_path, 'r') as f:
         lines = f.readlines()
+    
     for l in lines:
         if len(l.strip()) < 8:
             continue
@@ -88,7 +89,7 @@ def process_frame_infos(label_dir,frame_ids,track_maps,dst_lb):
     only_del = False
     if track_maps != None and dst_lb == -1:
         only_del =True
-    for idx,frm_info in enumerate(frame_infos):        
+    for idx,frm_info in enumerate(frame_infos):    
         has_modify = False
         frame_track = {}
         for box_info in frm_info:
@@ -151,7 +152,7 @@ def process_frame_infos(label_dir,frame_ids,track_maps,dst_lb):
         
         write_frame_infos(label_dir,frame_id_infos,'w')
 
-    frame_id_infos_append = {} 
+    frame_id_infos_append = {}
     for info in newinfos:
         frm = info[0]
         if frm not in frame_id_infos_append:

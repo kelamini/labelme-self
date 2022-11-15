@@ -2083,7 +2083,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self._config['image_root'] == '':
             self.importDirImagesFromJson(dirpath, pattern, load)
         else:
-            self.import_coco_dir(dirpath, pattern, load)
+            self.import_other_dir(dirpath, pattern, load)
 
     def importDirImagesFromJson(self, dirpath, pattern=None, load=True):
         self.actions.openNextImg.setEnabled(True)
@@ -2157,6 +2157,49 @@ class MainWindow(QtWidgets.QMainWindow):
             self.fileListWidget.addItem(item)
         self.openNextImg(load=load)
     
+    def import_other_dir(self, dirpath, pattern=None, load=True):
+        self.actions.openNextImg.setEnabled(True)
+        self.actions.openPrevImg.setEnabled(True)
+
+        if not self.mayContinue() or not dirpath:
+            return
+
+        self.lastOpenDir = dirpath
+        self.filename = None
+        self.fileListWidget.clear()
+        try:
+            other_files = glob.glob(dirpath + '/*.json')  # 加载文件夹下的 json 文件
+            other_files = sorted(other_files)     # 排序
+            print('loaded json files:',len(other_files))     # 打印 加载的 json 文件数量
+        except:
+            other_files = glob.glob(dirpath + '/*.txt')  # 加载文件夹下的 txt 文件
+            other_files = sorted(other_files)     # 排序
+            print('loaded txt files:',len(other_files))     # 打印 加载的 txt 文件数量
+        
+        for otherf in other_files:    # 单个文件处理
+            img_exts = ['jpg','jpeg']   # image 后缀
+            coco_name = os.path.split(otherf)[1]     # txt 文件名
+            for ext in img_exts:
+                try:
+                    img_path = os.path.join(self._config['image_root'], coco_name.replace('json',ext))   # image 的文件路径
+                except:
+                    img_path = os.path.join(self._config['image_root'], coco_name.replace('txt',ext))   # image 的文件路径
+                if os.path.isfile(img_path):
+                    break
+
+            label_file = otherf
+            self.label_files[img_path] = otherf
+            item = QtWidgets.QListWidgetItem(img_path)
+            item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+            if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
+                label_file
+            ):
+                item.setCheckState(Qt.Checked)
+            else:
+                item.setCheckState(Qt.Unchecked)
+            self.fileListWidget.addItem(item)
+        self.openNextImg(load=load)
+
     def scanAllImages(self, folderPath):
         extensions = [
             ".%s" % fmt.data().decode().lower()
@@ -2172,7 +2215,7 @@ class MainWindow(QtWidgets.QMainWindow):
         images.sort(key=lambda x: x.lower())
         return images
     
-    def set_invalid(self,trackid=None):     # 将 label 设置为 无效
+    def set_invalid(self,trackid=None):     # 将 label 设置为 (-1) 无效
         items = self.labelList.selectedItems()  # 选择一个 label
         print('sel items:',items)
         if not items:   # 若没有选择，则为所有
@@ -2221,7 +2264,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 # print('set to 1,',verified)
                 shape.is_verify = '1'
                 item.setText(shape.is_verify)
-                print("Chack the file is OK")
+                print("Chack the annotation is OK")
         
         # 完成操作 切换到下一幅图像
         currIndex = self.imageList.index(self.filename)
