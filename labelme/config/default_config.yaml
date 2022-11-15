@@ -105,3 +105,4 @@ shortcuts:
 
   set_invalid: [K, Ctrl+Shift+K]
   delete_annotation: [Z, Ctrl+Shift+Z]
+  is_verify: [M, Ctrl+Shift+M]

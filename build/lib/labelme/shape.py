@@ -51,6 +51,7 @@ class Shape(object):
         shape_type=None,
         flags=None,
         group_id=None,
+        is_verify=None,
     ):
         self.label = label
         self.group_id = group_id
@@ -60,6 +61,7 @@ class Shape(object):
         self.shape_type = shape_type
         self.flags = flags
         self.other_data = {}
+        self.is_verify = is_verify
 
         self._highlightIndex = None
         self._highlightMode = self.NEAR_VERTEX
@@ -100,33 +102,33 @@ class Shape(object):
     def close(self):
         self._closed = True
 
-    def addPoint(self, point):
+    def addPoint(self, point):      # 添加 点
         if self.points and point == self.points[0]:
             self.close()
         else:
             self.points.append(point)
 
-    def canAddPoint(self):
+    def canAddPoint(self):      # 只有 polygon 和 linestrip 能够添加 点
         return self.shape_type in ["polygon", "linestrip"]
 
-    def popPoint(self):
+    def popPoint(self):     # 弹出 点
         if self.points:
             return self.points.pop()
         return None
 
-    def insertPoint(self, i, point):
+    def insertPoint(self, i, point):    # 插入 点
         self.points.insert(i, point)
 
-    def removePoint(self, i):
+    def removePoint(self, i):   # 移除某一 点
         self.points.pop(i)
 
-    def isClosed(self):
+    def isClosed(self):     # 是否为闭合状态
         return self._closed
 
-    def setOpen(self):
+    def setOpen(self):  # 设置为打开状态
         self._closed = False
 
-    def getRectFromLine(self, pt1, pt2):
+    def getRectFromLine(self, pt1, pt2):    # 给定两个点 确定一个 矩形
         x1, y1 = pt1.x(), pt1.y()
         x2, y2 = pt2.x(), pt2.y()
         return QtCore.QRectF(x1, y1, x2 - x1, y2 - y1)
@@ -189,21 +191,21 @@ class Shape(object):
                 )
                 painter.fillPath(line_path, color)
 
-    def drawVertex(self, path, i):
-        d = self.point_size / self.scale
-        shape = self.point_type
+    def drawVertex(self, path, i):  # 画图形的 顶点
+        d = self.point_size / self.scale    # 顶点的直径
+        shape = self.point_type     # 顶点的形状
         point = self.points[i]
-        if i == self._highlightIndex:
+        if i == self._highlightIndex:   # 要高亮的 顶点
             size, shape = self._highlightSettings[self._highlightMode]
             d *= size
-        if self._highlightIndex is not None:
-            self._vertex_fill_color = self.hvertex_fill_color
+        if self._highlightIndex is not None:    # 顶点的填充颜色
+            self._vertex_fill_color = self.hvertex_fill_color   # 要高亮的 顶点
         else:
-            self._vertex_fill_color = self.vertex_fill_color
-        if shape == self.P_SQUARE:
-            path.addRect(point.x() - d / 2, point.y() - d / 2, d, d)
+            self._vertex_fill_color = self.vertex_fill_color    # 非高亮的 顶点
+        if shape == self.P_SQUARE:  # 顶点的形状
+            path.addRect(point.x() - d / 2, point.y() - d / 2, d, d)    # 方形
         elif shape == self.P_ROUND:
-            path.addEllipse(point, d / 2.0, d / 2.0)
+            path.addEllipse(point, d / 2.0, d / 2.0)    # 圆形
         else:
             assert False, "unsupported vertex shape"
 
@@ -231,7 +233,7 @@ class Shape(object):
     def containsPoint(self, point):
         return self.makePath().contains(point)
 
-    def getCircleRectFromLine(self, line):
+    def getCircleRectFromLine(self, line):  # 从两点确定的圆确定其外接矩形
         """Computes parameters to draw with `QPainterPath::addEllipse`"""
         if len(line) != 2:
             return None
@@ -261,13 +263,13 @@ class Shape(object):
     def boundingRect(self):
         return self.makePath().boundingRect()
 
-    def moveBy(self, offset):
+    def moveBy(self, offset):       # 根据偏移移动所有顶点（移动图形）
         self.points = [p + offset for p in self.points]
 
-    def moveVertexBy(self, i, offset):
+    def moveVertexBy(self, i, offset):      # 根据偏移量移动指定的顶点
         self.points[i] = self.points[i] + offset
 
-    def highlightVertex(self, i, action):
+    def highlightVertex(self, i, action):   # 根据当前操作高亮 顶点
         """Highlight a vertex appropriately based on the current action
 
         Args:
@@ -278,7 +280,7 @@ class Shape(object):
         self._highlightIndex = i
         self._highlightMode = action
 
-    def highlightClear(self):
+    def highlightClear(self):   # 清除 高亮点
         """Clear the highlighted point"""
         self._highlightIndex = None
 

@@ -21,20 +21,20 @@ def load_coco_txt_file(coco_file):
     coco_seg_pts =[]
     with open(coco_file, 'r') as f:
         lines = f.readlines()
-        for l in lines:
-            if len(l.strip()) < 8:
-                continue
-            items = l.strip('\n').split(';')
-            # print('items:',items,l)
-            annos = [float(v) for v in items[0].split()]
-            seg_pts = []
-            for k in range(1,len(items)):
-                seg_ptsk = [float(v) for v in items[k].split()]
-                if len(seg_ptsk) >8:
-                    seg_pts.append(seg_ptsk)
-            
-            coco_annos.append(annos)
-            coco_seg_pts.append(seg_pts)
+    for l in lines:
+        if len(l.strip()) < 8:
+            continue
+        items = l.strip('\n').split(';')
+        # print('items:',items,l)
+        annos = [float(v) for v in items[0].split()]
+        seg_pts = []
+        for k in range(1,len(items)):
+            seg_ptsk = [float(v) for v in items[k].split()]
+            if len(seg_ptsk) > 8:
+                seg_pts.append(seg_ptsk)
+        
+        coco_annos.append(annos)
+        coco_seg_pts.append(seg_pts)
     return coco_annos
 
 #label ctx cty w h track

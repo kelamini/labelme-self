@@ -173,11 +173,11 @@ def main():
         osp.dirname(osp.abspath(__file__)) + "/translate",
     )
     app = QtWidgets.QApplication(sys.argv)
-    app.setApplicationName(__appname__)
-    app.setWindowIcon(newIcon("icon"))
-    app.installTranslator(translator)
+    app.setApplicationName(__appname__) # 应用名称
+    app.setWindowIcon(newIcon("icon"))  # Icon
+    app.installTranslator(translator)   # 语言转换
 
-    win = MainWindow(
+    win = MainWindow(   # 主窗口
         config=config,
         filename=filename,
         output_file=output_file,
