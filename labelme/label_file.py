@@ -180,54 +180,6 @@ class LabelFile(object):
             if "other_data" not in shape:
                 shape["other_data"] = {}
         print("shapes", shapes)
-            
-        # for idx, l in enumerate(lines):
-        #     info_rect_contours = l.strip('\n').split(';')
-        #     gp_id = idx+1   # group_id
-        #     lb = None   # label
-        #     isverify = None     # 添加 key: is_verify
-        #     if len(info_rect_contours[0]) >= 5:
-        #         shape={"shape_type":"rectangle"}
-        #         info = info_rect_contours[0].split()
-        #         shape["label"] = str(int(float(info[0])))
-        #         lb = shape['label']
-        #         box = np.array([float(v) for v in info[1:5]]).reshape(-1,2)*img_size[None,:]    # xc, yc, w, h
-        #         box[0,:] -= box[1,:]*0.5        # x1, y1
-        #         box[1,:] =box[0,:]+ box[1,:]    # x2, y2
-                
-        #         shape["points"] = box.tolist()
-        #         shape['flags'] = {}
-        #         shape['other_data'] = {}
-                
-        #         shape['group_id'] = None
-        #         shape['is_verify'] = None   # 添加 key: is_verify
-        #         if len(info) >= 7:
-        #             try:
-        #                 gp_id = int(float(info[5]))
-        #                 isverify = int(float(info[6]))
-        #             except:
-        #                 gp_id = int(info[5])
-        #                 isverify = int(info[6])
-        #                 # gp_id = shape['group_id']
-        #             if len(info) > 7:
-        #                 shape['other_data']['other_info'] = info[7:]
-        #         shape['group_id'] = gp_id
-        #         shape['is_verify'] = isverify   # 添加 key: is_verify
-        #         shapes.append(shape)
-            
-        #     if len(info_rect_contours) > 1:
-        #         for ctidx, ct_str in enumerate(info_rect_contours[1:]):
-        #             if len(ct_str) > 4:
-        #                 ct_item = ct_str.split()
-        #                 ct_val = np.array([float(v) for v in ct_item]).reshape(-1,2)*img_size[None,:]
-        #                 shape={"shape_type":"polygon"}
-        #                 shape["label"] = lb                        
-        #                 shape["points"] = ct_val.tolist()
-        #                 shape['flags'] = {}
-        #                 shape['other_data'] = {}
-                        
-        #                 shape['group_id'] = gp_id*100
-        #                 shapes.append(shape)
 
         # Only replace data after everything is loaded.
         self.flags = flags
