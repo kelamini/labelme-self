@@ -2167,23 +2167,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lastOpenDir = dirpath
         self.filename = None
         self.fileListWidget.clear()
-        try:
-            other_files = glob.glob(dirpath + '/*.json')  # 加载文件夹下的 json 文件
-            other_files = sorted(other_files)     # 排序
-            print('loaded json files:',len(other_files))     # 打印 加载的 json 文件数量
-        except:
+        # try:
+        other_files = glob.glob(dirpath + '/*.json')  # 加载文件夹下的 json 文件
+        if len(other_files) == 0:
             other_files = glob.glob(dirpath + '/*.txt')  # 加载文件夹下的 txt 文件
-            other_files = sorted(other_files)     # 排序
-            print('loaded txt files:',len(other_files))     # 打印 加载的 txt 文件数量
+            print('loaded txt files:',len(other_files))     # 打印 加载的 json 文件数量
+        else:
+            print('loaded json files:',len(other_files))     # 打印 加载的 json 文件数量
+        other_files = sorted(other_files)     # 排序
         
         for otherf in other_files:    # 单个文件处理
             img_exts = ['jpg','jpeg']   # image 后缀
             coco_name = os.path.split(otherf)[1]     # txt 文件名
             for ext in img_exts:
-                try:
-                    img_path = os.path.join(self._config['image_root'], coco_name.replace('json',ext))   # image 的文件路径
-                except:
-                    img_path = os.path.join(self._config['image_root'], coco_name.replace('txt',ext))   # image 的文件路径
+                img_path = os.path.join(self._config['image_root'], coco_name.replace('json',ext).replace('txt', ext))   # image 的文件路径
                 if os.path.isfile(img_path):
                     break
 
